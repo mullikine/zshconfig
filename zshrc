@@ -232,4 +232,6 @@ bindkey "\ev" edit-command-line
 bindkey -s "^[i" "^A^Kcd ..\r"
 bindkey -s "^[o" "^A^Kpopd\r"
 
+bindkey -s "^[j" "^A^Kgit log\r"
+
 bindkey "\C-r" history-incremental-pattern-search-backward

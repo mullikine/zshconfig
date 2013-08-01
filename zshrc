@@ -234,5 +234,6 @@ bindkey -s "^[o" "^A^Kpopd\r"
 
 bindkey -s "^[j" "^A^Kgit log\r"
 bindkey -s "^[k" "^A^Kgit d\r"
+bindkey -s "^[;" "^A^Kgit diff\r"
 
 bindkey "\C-r" history-incremental-pattern-search-backward

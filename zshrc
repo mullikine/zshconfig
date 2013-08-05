@@ -234,6 +234,7 @@ bindkey "\ev" edit-command-line
 bindkey -s "^[i" "^A^Kcd ..\r"
 bindkey -s "^[o" "^A^Kpopd\r"
 
+bindkey -s "^[y" "^A^Kgit lg\r"
 bindkey -s "^[k" "^A^Kgit d\r"
 bindkey -s "^[j" "^A^Kgit log\r"
 bindkey -s "^[;" "^A^Kgit diff\r"

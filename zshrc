@@ -243,5 +243,6 @@ bindkey -s "^[n" "^A^Kgit rl\r"
 bindkey -s "^[w" "^A^Kgit status\r"
 bindkey -s "^[r" "^[[A"
 bindkey -s "^[t" "^A^Kgit add .\r"
+bindkey -s "^[e" "^A^Kgit commit -m \""
 
 bindkey "\C-r" history-incremental-pattern-search-backward

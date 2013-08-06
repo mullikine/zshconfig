@@ -242,5 +242,6 @@ bindkey -s "^[m" "^A^Kgit reflog\r"
 bindkey -s "^[n" "^A^Kgit rl\r"
 bindkey -s "^[w" "^A^Kgit status\r"
 bindkey -s "^[r" "^[[A"
+bindkey -s "^[t" "^A^Kgit add .\r"
 
 bindkey "\C-r" history-incremental-pattern-search-backward

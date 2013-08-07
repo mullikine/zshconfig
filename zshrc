@@ -246,7 +246,7 @@ bindkey -s "^[w" "^A^Kgit s\r"
 bindkey -s "^[r" "^[[A"
 bindkey -s "^[t" "^A^Kgit add .\r"
 bindkey -s "^[e" "^A^Kgit commit -m \""
-bindkey -s "^[p" "^A^Kgit checkout \`tmux paste-buffer\`\r"
+bindkey -s "^[p" "^A^Kgit checkout \`tmux show-buffer\`\r"
 bindkey -s "^[z" "^A^Kgit clean -f -d .\r"
 
 bindkey "\C-r" history-incremental-pattern-search-backward

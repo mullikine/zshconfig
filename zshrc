@@ -222,6 +222,8 @@ zstyle ':completion:history-words:*' menu yes
 zstyle ':completion:history-words:*' remove-all-dups yes
 bindkey "\e/" _history-complete-older
 bindkey "\e," _history-complete-newer
+
+# These are used in older and newer versions of zsh
 bindkey "\e[A" history-beginning-search-backward
 bindkey "\e[B" history-beginning-search-forward
 [[ -n "${key[Up]}" ]] && bindkey "${key[Up]}" history-beginning-search-backward
@@ -230,6 +232,8 @@ bindkey "\e[B" history-beginning-search-forward
 autoload -z edit-command-line
 zle -N edit-command-line
 bindkey "\ev" edit-command-line
+
+bindkey "\C-r" history-incremental-pattern-search-backward
 
 bindkey -s "^[i" "^A^Kcd ..\r"
 bindkey -s "^[o" "^A^Kpopd\r"
@@ -249,5 +253,3 @@ bindkey -s "^[e" "^A^Kgit commit -m \""
 bindkey -s "^[p" "^A^Kgit checkout \`tmux show-buffer\`\r"
 bindkey -s "^[z" "^A^Kgit clean -f -d .\r"
 bindkey -s "^[F" "^A^Kgit log -m -S '"
-
-bindkey "\C-r" history-incremental-pattern-search-backward

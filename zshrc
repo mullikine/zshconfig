@@ -263,5 +263,5 @@ bindkey -s "^[4" "^A^Kgit rebase -i \`tmux show-buffer|head -1|sed \"s/^\\\[ \t\
 bindkey -s "^[$" "^A^Kgit d \`tmux show-buffer|head -1|sed \"s/^\\\[ \t\\\]*//\"|cut -d ' ' -f 1\`\t\\\\\^! "
 bindkey -s "^[~" "^A^Kgit commit --amend -m \"\"^B"
 bindkey -s "^[5" "^A^Kgit show --name-only \`tmux show-buffer|head -1|sed \"s/^\\\[ \t\\\]*//\"|cut -d ' ' -f 1\`\t"
-bindkey -s "^[%" "^A^Kgit stash show \t"
+bindkey -s "^[%" "^A^Kgit stash show -u \t"
 bindkey -s "^[9" "^A^Kgit d HEAD\\\\\^!\n"

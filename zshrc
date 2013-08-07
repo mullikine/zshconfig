@@ -237,6 +237,7 @@ bindkey "\C-r" history-incremental-pattern-search-backward
 
 bindkey -s "^[i" "^A^Kcd ..\r"
 bindkey -s "^[o" "^A^Kpopd\r"
+bindkey -s "^[r" "^[[A"
 
 bindkey -s "^[y" "^A^Kgit lg\r"
 bindkey -s "^[k" "^A^Kgit d\r"
@@ -247,7 +248,6 @@ bindkey -s "^[:" "^A^Kgit diff --cached\r"
 bindkey -s "^[m" "^A^Kgit reflog\r"
 bindkey -s "^[n" "^A^Kgit rl\r"
 bindkey -s "^[w" "^A^Kgit s\r"
-bindkey -s "^[r" "^[[A"
 bindkey -s "^[t" "^A^Kgit add .\r"
 bindkey -s "^[e" "^A^Kgit commit -m \""
 bindkey -s "^[p" "^A^Kgit checkout \`tmux show-buffer\`\r"

@@ -236,14 +236,16 @@ bindkey -s "^[o" "^A^Kpopd\r"
 
 bindkey -s "^[y" "^A^Kgit lg\r"
 bindkey -s "^[k" "^A^Kgit d\r"
+bindkey -s "^[K" "^A^Kgit d --cached\r"
 bindkey -s "^[j" "^A^Kgit log\r"
 bindkey -s "^[;" "^A^Kgit diff\r"
+bindkey -s "^[:" "^A^Kgit diff --cached\r"
 bindkey -s "^[m" "^A^Kgit reflog\r"
 bindkey -s "^[n" "^A^Kgit rl\r"
 bindkey -s "^[w" "^A^Kgit status\r"
 bindkey -s "^[r" "^[[A"
 bindkey -s "^[t" "^A^Kgit add .\r"
 bindkey -s "^[e" "^A^Kgit commit -m \""
-bindkey -s "^[p" "^A^Kgit checkout \`tmux paste-buffer\"\r"
+bindkey -s "^[p" "^A^Kgit checkout \`tmux paste-buffer\`\r"
 
 bindkey "\C-r" history-incremental-pattern-search-backward

@@ -11,9 +11,6 @@ plugins=(svn git mercurial osx ruby rails command-not-found)
 source $ZSH/oh-my-zsh.sh
 unsetopt correct_all
 
-if [ -f ~/.profile ]; then
-    . ~/.profile
-fi
 if [ -f ~/.bash_aliases ]; then
     . ~/.bash_aliases
 fi

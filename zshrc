@@ -60,12 +60,6 @@ rationalise-dot() {
         LBUFFER+=.
     fi
 }
-zle -N rationalise-dot
-bindkey . rationalise-dot
-
-bindkey '^W' kill-region
-bindkey '^[w' copy-region-as-kill
-
 settitle() {
     printf "\033k$1\033\\"
 }
@@ -109,6 +103,10 @@ echo -en "\e[0m"
 zstyle ':completion:history-words:*' list no 
 zstyle ':completion:history-words:*' menu yes
 zstyle ':completion:history-words:*' remove-all-dups yes
+zle -N rationalise-dot
+bindkey . rationalise-dot
+bindkey '^W' kill-region
+bindkey '^[w' copy-region-as-kill
 bindkey "\e/" _history-complete-older
 bindkey "\e," _history-complete-newer
 bindkey "\e[A" history-beginning-search-backward

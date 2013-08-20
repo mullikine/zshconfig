@@ -114,6 +114,7 @@ autoload -z edit-command-line
 zle -N edit-command-line
 bindkey "\ev" edit-command-line
 bindkey "\C-r" history-incremental-pattern-search-backward
+bindkey -s "^[r" "^A^Kranger\r"
 bindkey -s "^[i" "^A^Kcd ..\r"
 bindkey -s "^[o" "^A^Kpopd\r"
 bindkey -s "^[y" "^A^Kgit lg\r"

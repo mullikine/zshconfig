@@ -20,6 +20,9 @@ fi
 if [ -f ~/.shellrc ]; then
     . ~/.shellrc
 fi
+if [ -f ~/.shell_functions ]; then
+    . ~/.shell_functions
+fi
 
 _tilde () {
     [[ -n "$compstate[quote]" ]] && return 1

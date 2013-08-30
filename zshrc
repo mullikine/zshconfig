@@ -1,5 +1,6 @@
 setopt rmstarsilent
 setopt extended_glob
+setopt append_history no_inc_append_history no_share_history
 
 typeset +x CWD
 export ZSH=$HOME/build/versioned/git/oh-my-zsh

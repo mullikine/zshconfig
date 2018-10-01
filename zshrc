@@ -55,6 +55,8 @@ alias -g noglob git
 # setopt extended_glob # disabling this will not disable **, but having this unset will disable the evil # sign. echo yo #yo, echo yo#yo. so evil
 # This is an even better solution!
 # disable -p \#     # this disables the pound sign only!
+ 
+setopt interactivecomments
 
 typeset +x CWD
 export ZSH=$VAS/source/git/oh-my-zsh
@@ -344,24 +346,66 @@ bindkey -s "^[%" "^A^Kgit stash show -u \t"
 #bindkey -s "^[y" "^A^Kgit-log.sh\r" #bindkey -s "^[y" "^A^Kgit lg\r"
 #
 #
-tmuxcapture() {
-    #tmux-capture.sh -w
-    tm -te -d capture -clean -history
-}
-zle -N tmuxcapture
-bindkey "^[y" tmuxcapture
+#
+#tmuxcapture() {
+#    #tmux-capture.sh -w
+#    tm -te -d capture -clean -history
+#}
+#zle -N tmuxcapture
+#bindkey "^[y" tmuxcapture
 
 bindkey -s "^[s" "^A^Kdired\r"
 bindkey -s "^[K" "^A^Kvc g dt -c\r" #bindkey -s "^[K" "^A^Kgit d --cached\r"
 bindkey -s "^[J" "^A^Kf find-file-repo \"*\"^B" # find a file by name in all commits
-bindkey -s "^[j" "^A^Ksh-hydra\r"
+
+# M-q is reserved for push command to stack
+#bindkey -s "^[q" "^A^Ksh-general\r"
+bindkey -s "^[l" "^A^Ksh-general\r"
+# bindkey -s "^[l" "^A^Ktp rt-locate"
+#
+bindkey -s "^[L" "^A^Ksh-ranger-lingo .\r"
+
+# overwrite zsh's M-x
+bindkey -s "^[x" "^A^Ksh-hydra\r"
+bindkey -s "^[j" "^A^Ksh-jump\r"
+
+bindkey -s "^[y" "^A^Ksh-yank\r"
+bindkey -s "^[-" "^A^Ksh-signals\r"
+bindkey -s "^[&" "^A^Kbg\r"
+bindkey -s "^[*" "^A^Kdisown\r"
+# bindkey -s "^[*" "^A^Kgit diff !$\t\n"
+#
+# zle -N my-sh-yank
+# my-sh-yank() {
+#     # Some like 'hs make' need the tty to run. Need this.
+# 
+#     # If not a tty but TTY is exported from outside, attach the tty
+#     if test "$mytty" = "not a tty" && ! [ -z ${TTY+x} ]; then
+#         pl "Attaching tty"
+#         exec 0<"$TTY"
+#         exec 1>"$TTY"
+#     else
+#         # Otherwise, this probably has its own tty and only needs normal
+#         # reattachment (maybe stdin was temporarily redirected)
+#         exec </dev/tty
+#     fi
+#     cmd="$history[$((HISTCMD-1))]"
+# 
+#     echo
+#     sh-yank
+# 
+#     return 0
+# }
+# bindkey "^[y" my-sh-yank
+
 # bindkey -s "^[j" "^A^Kgit log\r"
 bindkey -s "^[;" "^A^Ksh-git-hydra\r"
 bindkey -s "^[:" "^A^Kgit diff --cached\r"
 bindkey -s "^[W" "^A^Kgit dw\r"
 bindkey -s "^[M" "^A^Kmagithub\r"
-bindkey -s "^[m" "^A^Kmagit\r"
-bindkey -s "^[n" "^A^Kmagit rl\r"
+bindkey -s "^[m" "^A^Ksh-git\r"
+bindkey -s "^[n" "^A^Ksh-new\r"
+# bindkey -s "^[n" "^A^Kmagit rl\r"
 bindkey -s "^[w" "^A^Kdired\r"
 bindkey -s "^[s" "^A^Kpe\r" # spacemacs
 bindkey -s "^[t" "^A^Kgit add -A .\r"
@@ -383,7 +427,6 @@ bindkey -s "^[3" "^A^Kgit stash apply\r"
 bindkey -s "^[!" "^A^Kgit stash drop \t"
 bindkey -s "^[4" "^A^Kgit rebase -i \`tmux show-buffer|head -1|sed \"s/^\\\[ \t\\\]*//\"|cut -d ' ' -f 1\`\t"
 bindkey -s "^[8" "^A^Kdifftool.sh \\\\\^!^B^B^B"
-bindkey -s "^[*" "^A^Kgit diff !$\t\n"
 bindkey -s "^[9" "^A^Kdifftool.sh HEAD\\\\\^:\n"
 bindkey -s "^[)" "^A^Kgit rename -m \`git rev-parse --abbrev-ref HEAD\`\t"
 bindkey -s "^[(" "^A^Kgit diff HEAD\\\\\^!\n"
@@ -418,10 +461,6 @@ bindkey -s "^[g" "^A^Kopen -e \"\$(xc | tail -n 1)\"\r"
 #bindkey -s "^[y" "^A^Ktmux-capture.sh -v\r"
 # Binding to M-k was too annoying
 #bindkey -s "^[k" "^A^Kdifftool.sh\r" #bindkey -s "^[k" "^A^Kgit d\r"
-
-
-# new
-bindkey -s "^[l" "^A^Ktp rt-locate"
 
 # Doesn't work
 #tmuxwinhere() {
@@ -519,23 +558,40 @@ zmodload -i zsh/parameter
 copy-last-command-output() {
     # Some like 'hs make' need the tty to run. Need this.
 
-    # If not a tty but TTY is exported from outside, attach the tty
-    if test "$mytty" = "not a tty" && ! [ -z ${TTY+x} ]; then
-        pl "Attaching tty"
-        exec 0<"$TTY"
-        exec 1>"$TTY"
-    else
-        # Otherwise, this probably has its own tty and only needs normal
-        # reattachment (maybe stdin was temporarily redirected)
-        exec </dev/tty
-    fi
-    cmd="$history[$((HISTCMD-1))]"
+    ## If not a tty but TTY is exported from outside, attach the tty
+    #if test "$mytty" = "not a tty" && ! [ -z ${TTY+x} ]; then
+    #    pl "Attaching tty"
+    #    exec 0<"$TTY"
+    #    exec 1>"$TTY"
+    #else
+    #    # Otherwise, this probably has its own tty and only needs normal
+    #    # reattachment (maybe stdin was temporarily redirected)
+    #    exec </dev/tty
+    #fi
+    #cmd="$history[$((HISTCMD-1))]"
 
-    eval "$cmd" | s chomp | xc -i
+    # eval "$cmd" | s chomp | xc -i
+    #
+    zl copy-last-output
 }
+# This kills the terminal history because I am pressing ^L
+# zle -N copy-last-command-output
+# bindkey "^X^L" copy-last-command-output
+# Need a different command for this.
 zle -N copy-last-command-output
-bindkey "^X^L" copy-last-command-output
+bindkey "^X^K" copy-last-command-output
 
+qtv-term() {
+    zl qtv-term
+}
+zle -N qtv-term
+bindkey "^X^H" qtv-term
+
+qtv-last-output() {
+    zl qtv-last-output
+}
+zle -N qtv-last-output
+bindkey "^X^V" qtv-last-output
 
 
 copy-zle() {
@@ -624,14 +680,6 @@ ord() {
 
 #source $VAS/source/git/scripts/tmux/start_tmux.sh
 
-#temporary
-MANPATH="$BULK/local/share/man:$MANPATH"
-
-
-#source $VAS/projects/scripts/ebl-common.sh
-
-export MANWIDTH=70
-
 # Overrides for terminfo$
 export TERMINFO=~/.terminfo
 
@@ -666,7 +714,7 @@ if [ -f "$DUMP$MYGIT/google-cloud/google-cloud-sdk/completion.zsh.inc" ]; then s
 zmodload -i zsh/parameter
 copy-last-command-with-wd() {
     #echo "cd \"$(pwd)\"; $history[$((HISTCMD-1))]" | xclip -f -i -selection primary &>1 | tmux load-buffer -
-    echo "cd \"$(pwd)\"; $history[$((HISTCMD-1))]" | mnm | xc notify 2>/dev/null
+    echo "cd \"$(pwd)\"; $history[$((HISTCMD-1))]" | mnm | xc -n -i 2>/dev/null
 }
 zle -N copy-last-command-with-wd
 #bindkey "^[k" copy-last-command-with-wd
@@ -723,7 +771,7 @@ bindkey "\ek" copy-last-command-with-wd
 }
 
 
-fzf-emacs() {
+fzf-dirs() {
     trap func_trap EXIT
     func_trap() {
         tput rc
@@ -731,10 +779,11 @@ fzf-emacs() {
 
     tput sc
 
-    f find-all-no-git | fzf | {
+    F d | mnm | fzf | {
         input="$(cat)"
         if [ -n "$input" ]; then
-            pl "$input" | tm -i -S -tout spv -xargs rifle
+            # pl "$input" | tm -i -S -tout spv -xargs rifle
+            printf -- "%s" "$input" | xc -i
         fi
     }
 
@@ -747,8 +796,36 @@ fzf-emacs() {
         #fi
 
 }
-zle -N fzf-emacs
-bindkey '^Q' fzf-emacs
+zle -N fzf-dirs
+bindkey '^Q' fzf-dirs
+
+fzf-files() {
+    trap func_trap EXIT
+    func_trap() {
+        tput rc
+    }
+
+    tput sc
+
+    F f | mnm | fzf | {
+        input="$(cat)"
+        if [ -n "$input" ]; then
+            # pl "$input" | tm -i -S -tout spv -xargs rifle
+            printf -- "%s" "$input" | xc -i
+        fi
+    }
+
+
+
+        #filelist="$(find-all-no-git.sh | fzf -p --multi)"
+        #if [ -n "$filelist" ]; then
+        #    pl "$filelist" | tm -tout nw 'vim -'
+        #    #echo -E "$filelist" | vim -
+        #fi
+
+}
+zle -N fzf-files
+bindkey '\e^Q' fzf-files
 
 
 function _git-status {
@@ -836,7 +913,19 @@ fi
 # source /home/shane/.bazel/bin/bazel-complete.bash
 
 
+# this was killing zsh -- bad syntax
+# # load .esrc environment # es-shell cant output to shell. this command
+# # just outputs its environment
+# if [ -f "$HOME/.esrc" ]; then
+#     eval "`es -l <<-x
+#         sh <<<'export -p'
+#     x`"
+# fi
+
+
 
 # This makes things like eipe work
 # "export TTY; echo hi | eipe | cat"
 export TTY
+
+source $DUMP$HOME/notes2018/current/programs/exercism/shell/exercism_completion.zsh

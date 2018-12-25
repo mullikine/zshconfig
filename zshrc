@@ -55,7 +55,7 @@ alias -g noglob git
 # setopt extended_glob # disabling this will not disable **, but having this unset will disable the evil # sign. echo yo #yo, echo yo#yo. so evil
 # This is an even better solution!
 # disable -p \#     # this disables the pound sign only!
- 
+
 setopt interactivecomments
 
 typeset +x CWD
@@ -297,7 +297,7 @@ bindkey "\ev" edit-command-line
 function explainshell {
     tf_zle="$(nix mktemp zle sh)"
     url="https://explainshell.com/explain?cmd=$(print -R - "$PREBUFFER$BUFFER" | urlencode)"
-    
+
     tf_man="$(nix tf man || echo /dev/null)"
 
     ci elinks-dump "$url" 0</dev/null | sed -n '/^[^ ]/,$p' > "$tf_man"
@@ -396,7 +396,7 @@ bindkey -s "^[*" "^A^Kdisown\r"
 # zle -N my-sh-yank
 # my-sh-yank() {
 #     # Some like 'hs make' need the tty to run. Need this.
-# 
+#
 #     # If not a tty but TTY is exported from outside, attach the tty
 #     if test "$mytty" = "not a tty" && ! [ -z ${TTY+x} ]; then
 #         pl "Attaching tty"
@@ -408,10 +408,10 @@ bindkey -s "^[*" "^A^Kdisown\r"
 #         exec </dev/tty
 #     fi
 #     cmd="$history[$((HISTCMD-1))]"
-# 
+#
 #     echo
 #     sh-yank
-# 
+#
 #     return 0
 # }
 # bindkey "^[y" my-sh-yank

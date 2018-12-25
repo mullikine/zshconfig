@@ -192,7 +192,7 @@ fi
 #needs to come after cd(){}
 
 echo -en "\e[0;37m"
-pwd
+# pwd # show pwd on start
 echo -en "\e[0m"
 
 zstyle ':completion:history-words:*' list no
@@ -294,6 +294,23 @@ autoload -z edit-command-line
 zle -N edit-command-line
 bindkey "\ev" edit-command-line
 
+function explainshell {
+    tf_zle="$(nix mktemp zle sh)"
+    url="https://explainshell.com/explain?cmd=$(print -R - "$PREBUFFER$BUFFER" | urlencode)"
+    
+    tf_man="$(nix tf man || echo /dev/null)"
+
+    ci elinks-dump "$url" 0</dev/null | sed -n '/^[^ ]/,$p' > "$tf_man"
+
+    if test -s "$tf_man"; then
+        tm -d -t spv "vs $tf_man"
+    fi
+}
+
+autoload -z explainshell
+zle -N explainshell
+bindkey "\eE" explainshell
+
 function rt-grep() {
     # What does this do?
     exec </dev/tty
@@ -358,6 +375,7 @@ bindkey -s "^[s" "^A^Kdired\r"
 bindkey -s "^[K" "^A^Kvc g dt -c\r" #bindkey -s "^[K" "^A^Kgit d --cached\r"
 bindkey -s "^[J" "^A^Kf find-file-repo \"*\"^B" # find a file by name in all commits
 
+# I could always make a new binding for that
 # M-q is reserved for push command to stack
 #bindkey -s "^[q" "^A^Ksh-general\r"
 bindkey -s "^[l" "^A^Ksh-general\r"
@@ -437,6 +455,7 @@ bindkey -s "^[r" "^A^Kranger\r"
 bindkey -s "^[o" "^A^Kpopd\r"
 bindkey -s "^[R" "^E|grep -i "
 bindkey -s "^[^g" "^A^Kvgrep -f -- \"\"^B"
+# bindkey '\eg' _git-status
 #bindkey -s "^[g" "^A^Kvgrep -- \"\"^B"
 bindkey -s "^[g" "^A^Kopen -e \"\$(xc | tail -n 1)\"\r"
 #bindkey -s "^[m" "^A^Kgit reflog\r"
@@ -485,6 +504,8 @@ bindkey "^[H" f_tmux_split_v
 bindkey -s "^[Q" "^A^K\`!!\`^A"
 # This doesn't contain
 bindkey -s "^[S" "^A^Ktp find-here-path \"**\"^B^B"
+
+bindkey -s "^[I" "^A^Ktp find-here-path -:2 \"**\"^B^B"
 
 # arrow keys
 bindkey -s "^[[1;3D" "^A^Kpopd\n"
@@ -570,7 +591,7 @@ copy-last-command-output() {
     #fi
     #cmd="$history[$((HISTCMD-1))]"
 
-    # eval "$cmd" | s chomp | xc -i
+    # eval "$cmd" | xc -n -i
     #
     zl copy-last-output
 }
@@ -704,17 +725,10 @@ export SENSING3D=/var/smulliga/projects/3dsensing/packages/3dsensing
 # source $MYGIT/zsh-users/zsh-autosuggestions/zsh-autosuggestions.zsh
 
 
-# The next line updates PATH for the Google Cloud SDK.
-if [ -f "$HOME$MYGIT/google-cloud-sdk/google-cloud-sdk/path.zsh.inc" ]; then source "$HOME$MYGIT/google-cloud-sdk/google-cloud-sdk/path.zsh.inc"; fi
-
-# The next line enables shell command completion for gcloud.
-if [ -f "$DUMP$MYGIT/google-cloud/google-cloud-sdk/completion.zsh.inc" ]; then source "$DUMP$MYGIT/google-cloud/google-cloud-sdk/completion.zsh.inc"; fi
-
-
 zmodload -i zsh/parameter
 copy-last-command-with-wd() {
     #echo "cd \"$(pwd)\"; $history[$((HISTCMD-1))]" | xclip -f -i -selection primary &>1 | tmux load-buffer -
-    echo "cd \"$(pwd)\"; $history[$((HISTCMD-1))]" | mnm | xc -n -i 2>/dev/null
+    echo "cd \"$(pwd)\"; $history[$((HISTCMD-1))]" | sed 's//\\b/g' | mnm | xc -n -i 2>/dev/null
 }
 zle -N copy-last-command-with-wd
 #bindkey "^[k" copy-last-command-with-wd
@@ -784,6 +798,12 @@ fzf-dirs() {
         if [ -n "$input" ]; then
             # pl "$input" | tm -i -S -tout spv -xargs rifle
             printf -- "%s" "$input" | xc -i
+            # printf -- "copied" | ns
+            exec </dev/tty
+            input="$(printf -- "%s" "$input" | umn)"
+            cd "$input"
+            pwd
+            CWD="$input" zsh
         fi
     }
 
@@ -812,6 +832,8 @@ fzf-files() {
         if [ -n "$input" ]; then
             # pl "$input" | tm -i -S -tout spv -xargs rifle
             printf -- "%s" "$input" | xc -i
+            exec </dev/tty
+            v -- "$(printf -- "%s" "$input" | umn)"
         fi
     }
 
@@ -825,7 +847,8 @@ fzf-files() {
 
 }
 zle -N fzf-files
-bindkey '\e^Q' fzf-files
+# bindkey '\e^Q' fzf-files # C-M-q
+bindkey '\eq' fzf-files # M-q
 
 
 function _git-status {
@@ -835,7 +858,6 @@ function _git-status {
 }
 # Declare the function as a widget
 zle -N _git-status
-# bindkey '\eg' _git-status
 
 # List zle widgets
 # zle -la
@@ -928,4 +950,14 @@ fi
 # "export TTY; echo hi | eipe | cat"
 export TTY
 
-source $DUMP$HOME/notes2018/current/programs/exercism/shell/exercism_completion.zsh
+. $DUMP$HOME/notes2018/current/programs/exercism/shell/exercism_completion.zsh
+
+# Appears to not work
+# . $HOME/source/git/github/hub/etc/hub.zsh_completion
+
+
+# The next line updates PATH for the Google Cloud SDK.
+if [ -f "$HOME$MYGIT/google-cloud-sdk/google-cloud-sdk/path.zsh.inc" ]; then source "$HOME$MYGIT/google-cloud-sdk/google-cloud-sdk/path.zsh.inc"; fi
+
+# The next line enables shell command completion for gcloud.
+if [ -f "$DUMP$MYGIT/google-cloud/google-cloud-sdk/completion.zsh.inc" ]; then source "$DUMP$MYGIT/google-cloud/google-cloud-sdk/completion.zsh.inc"; fi

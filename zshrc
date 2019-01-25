@@ -59,8 +59,6 @@ alias -g noglob git
 setopt interactivecomments
 
 typeset +x CWD
-export ZSH=$VAS/source/git/oh-my-zsh
-export ZSH_THEME="more-minimal" # - fav
 export HIST_IGNORE_ALL_DUPS
 export DISABLE_AUTO_UPDATE="true"
 export DISABLE_AUTO_TITLE="true"
@@ -68,13 +66,19 @@ export DISABLE_AUTO_TITLE="true"
 # This one is slow. But it's also really useful. I should value
 # usefulness over speed for zsh.
 #command-not-found
-plugins=(command-not-found git ssh-completion)
 
 #svn git
 # disabled-plugins:
 # zsh-syntax-highlighting
 #source $ZSH/oh-my-zsh.sh
-source $VAS/source/git/oh-my-zsh/oh-my-zsh.sh
+
+
+if test -f "$MYGIT/oh-my-zsh/oh-my-zsh.sh"; then
+    export ZSH=$MYGIT/oh-my-zsh
+    export ZSH_THEME="more-minimal" # - fav
+    plugins=(command-not-found git ssh-completion)
+    source $MYGIT/oh-my-zsh/oh-my-zsh.sh
+fi 
 
 unsetopt correct_all
 
@@ -170,7 +174,7 @@ cd () {
         CWD="`pwd`"
     fi
 
-    . $VAS/projects/scripts/libraries/when-cd.sh
+    . $HOME/scripts/libraries/when-cd.sh
 }
 
 if [ -n "$CWD" ] && ! test "$CWD" = "$(pwd)"; then
@@ -294,22 +298,23 @@ autoload -z edit-command-line
 zle -N edit-command-line
 bindkey "\ev" edit-command-line
 
-function explainshell {
-    tf_zle="$(nix mktemp zle sh)"
-    url="https://explainshell.com/explain?cmd=$(print -R - "$PREBUFFER$BUFFER" | urlencode)"
+function zshexplainshell {
+    print -R - "$PREBUFFER$BUFFER" | tm -tout -i -S spv "explainshell"
 
-    tf_man="$(nix tf man || echo /dev/null)"
+    # tf_zle="$(nix mktemp zle sh)"
+    # url="https://explainshell.com/explain?cmd=$(print -R - "$PREBUFFER$BUFFER" | urlencode)"
+    # tf_man="$(nix tf man || echo /dev/null)"
 
-    ci elinks-dump "$url" 0</dev/null | sed -n '/^[^ ]/,$p' > "$tf_man"
+    # ci elinks-dump "$url" 0</dev/null | sed -n '/^[^ ]/,$p' > "$tf_man"
 
-    if test -s "$tf_man"; then
-        tm -d -t spv "vs $tf_man"
-    fi
+    # if test -s "$tf_man"; then
+    #     tm -d -t spv "vs $tf_man"
+    # fi
 }
 
-autoload -z explainshell
-zle -N explainshell
-bindkey "\eE" explainshell
+autoload -z zshexplainshell
+zle -N zshexplainshell
+bindkey "\eE" zshexplainshell
 
 function rt-grep() {
     # What does this do?
@@ -716,7 +721,7 @@ unset GREP_OPTIONS
 export DUALMODE=$VAS/projects/dualmode
 export SENSING3D=/var/smulliga/projects/3dsensing/packages/3dsensing
 
-. $VAS/projects/scripts/libraries/when-cd.sh
+. $HOME/scripts/libraries/when-cd.sh
 
 # exec 1> >(mnm)
 # exec 2> >(mnm)
@@ -950,7 +955,8 @@ fi
 # "export TTY; echo hi | eipe | cat"
 export TTY
 
-. $DUMP$HOME/notes2018/current/programs/exercism/shell/exercism_completion.zsh
+ex_fp="$DUMP$HOME/notes2018/current/programs/exercism/shell/exercism_completion.zsh"
+test -f "$ex_fp" && . "$ex_fp"
 
 # Appears to not work
 # . $HOME/source/git/github/hub/etc/hub.zsh_completion
@@ -961,3 +967,5 @@ if [ -f "$HOME$MYGIT/google-cloud-sdk/google-cloud-sdk/path.zsh.inc" ]; then sou
 
 # The next line enables shell command completion for gcloud.
 if [ -f "$DUMP$MYGIT/google-cloud/google-cloud-sdk/completion.zsh.inc" ]; then source "$DUMP$MYGIT/google-cloud/google-cloud-sdk/completion.zsh.inc"; fi
+
+export DISPLAY=:0

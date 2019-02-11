@@ -78,7 +78,7 @@ if test -f "$MYGIT/oh-my-zsh/oh-my-zsh.sh"; then
     export ZSH_THEME="more-minimal" # - fav
     plugins=(command-not-found git ssh-completion)
     source $MYGIT/oh-my-zsh/oh-my-zsh.sh
-fi 
+fi
 
 unsetopt correct_all
 
@@ -338,9 +338,17 @@ function rt-command-line() {
 
     print -R - "$PREBUFFER$BUFFER" > $tf_zle
 
-    exec </dev/tty
+    exec </dev/tty `# see etty`
 
-    cat "$tf_zle" | rtcmd
+    tf_zle_contents="$(cat "$tf_zle")"
+
+    if test -n "$tf_zle_contents"; then
+        rtcmd -E "$(cat $tf_zle)"
+    else
+        fz-rtcmd
+    fi
+
+    # cat "$tf_zle" | rtcmd
     print -Rz - "$(<$tf_zle)"
 
     command rm -f "$tf_zle"
@@ -612,6 +620,7 @@ qtv-term() {
 }
 zle -N qtv-term
 bindkey "^X^H" qtv-term
+
 
 qtv-last-output() {
     zl qtv-last-output

@@ -151,6 +151,8 @@ unsetopt auto_name_dirs
 
 # cd function
 cd () {
+    ret=0
+
     if [[ "x$*" = "x..." ]]
     then
         cd ../..
@@ -170,11 +172,15 @@ cd () {
             CWD="$@"
         fi
         # silence to stop vim gf complaining. can't be bothered finding the real reason
-        builtin cd "$CWD" 2>/dev/null
+        # enable again
+        builtin cd "$CWD"
+        ret="$?"
         CWD="`pwd`"
     fi
 
     . $HOME/scripts/libraries/when-cd.sh
+
+    return "$ret"
 }
 
 if [ -n "$CWD" ] && ! test "$CWD" = "$(pwd)"; then
@@ -586,7 +592,6 @@ bindkey -e '\e[1;3Q' vi-yank-x-selection
 #zle -N insert-last-command-output
 #bindkey "^X^L" insert-last-command-output
 
-
 zmodload -i zsh/parameter
 
 copy-last-command-output() {
@@ -614,6 +619,7 @@ copy-last-command-output() {
 # Need a different command for this.
 zle -N copy-last-command-output
 bindkey "^X^K" copy-last-command-output
+bindkey "^X^L" copy-last-command-output
 
 qtv-term() {
     zl qtv-term
@@ -621,13 +627,11 @@ qtv-term() {
 zle -N qtv-term
 bindkey "^X^H" qtv-term
 
-
 qtv-last-output() {
     zl qtv-last-output
 }
 zle -N qtv-last-output
 bindkey "^X^V" qtv-last-output
-
 
 copy-zle() {
   printf -- "%s" "$BUFFER" | xc -i
@@ -638,7 +642,6 @@ bindkey "\eY" copy-zle
 
 # M-i
 bindkey -s "^[i" "^A^Kcd ..\r"
-
 
 #. ~/versioned/git/zsh-fuzzy-match/fuzzy-match.zsh
 # }}}
@@ -721,7 +724,6 @@ export TERMINFO=~/.terminfo
 # This is deprecated, so disable it. Not sure what is setting it.
 unset GREP_OPTIONS
 
-
 ## turn off tracing
 #unsetopt xtrace
 ## restore stderr to the value saved in FD 3
@@ -737,7 +739,6 @@ export SENSING3D=/var/smulliga/projects/3dsensing/packages/3dsensing
 
 # Not that useful
 # source $MYGIT/zsh-users/zsh-autosuggestions/zsh-autosuggestions.zsh
-
 
 zmodload -i zsh/parameter
 copy-last-command-with-wd() {
@@ -764,8 +765,6 @@ bindkey "\ek" copy-last-command-with-wd
 #     }
 #     zle -N addText
 #     bindkey '^Z' addText
-
-
 
 {
     function zsh-paste-after() {
@@ -797,7 +796,6 @@ bindkey "\ek" copy-last-command-with-wd
     zle -N zsh-paste-before
     bindkey "\eP" zsh-paste-before
 }
-
 
 fzf-dirs() {
     trap func_trap EXIT
@@ -851,19 +849,15 @@ fzf-files() {
         fi
     }
 
-
-
         #filelist="$(find-all-no-git.sh | fzf -p --multi)"
         #if [ -n "$filelist" ]; then
         #    pl "$filelist" | tm -tout nw 'vim -'
         #    #echo -E "$filelist" | vim -
         #fi
-
 }
 zle -N fzf-files
 # bindkey '\e^Q' fzf-files # C-M-q
 bindkey '\eq' fzf-files # M-q
-
 
 function _git-status {
     zle kill-whole-line
@@ -901,7 +895,6 @@ fi
 
 . $HOME/scripts/libraries/bash-library.sh
 
-
 # add this configuration to ~/.zshrc
 #export HISTFILE=~/.zsh_history  # ensure history file visibility
 export HH_CONFIG=hicolor        # get more colors
@@ -929,7 +922,6 @@ export PARENT_WINDOW_ID
 # If you use zsh and Tramp hangs every time you try to connect, try
 # placing this in your .zshrc from the remote computer:
 
-
 if [[ "$TERM" == "dumb" ]]
 then
     # When zsh is run in emacs through C-c r, or ("s" shell "shell"), it enters here.
@@ -948,7 +940,6 @@ fi
 # This only works for bash
 # source /home/shane/.bazel/bin/bazel-complete.bash
 
-
 # this was killing zsh -- bad syntax
 # # load .esrc environment # es-shell cant output to shell. this command
 # # just outputs its environment
@@ -957,8 +948,6 @@ fi
 #         sh <<<'export -p'
 #     x`"
 # fi
-
-
 
 # This makes things like eipe work
 # "export TTY; echo hi | eipe | cat"

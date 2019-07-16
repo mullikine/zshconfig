@@ -272,7 +272,7 @@ function edit-command-line() {
     # overrides /home/shane/local/share/zsh/4.3.12-test-2/functions/edit-command-line
     # so that we use a custom vim for editing the command line
 
-    tf_zle="$(nix mktemp zle sh)"
+    tf_zle="$(ux mktemp zle sh)"
     # ns "$tf_zle"
 
     print -R - "$PREBUFFER$BUFFER" > "$tf_zle"
@@ -282,8 +282,9 @@ function edit-command-line() {
     # tm -t nw -n zle4 "cat '$tf_zle' | vim -"
     # tm -t nw "vim \"$tf_zle\""
 
+    # Do I really want this to be inside another tmux or can I use the entire pane?
     # tm -t sph -n zle4 "e c '$tf_zle' || pak"
-    tm -t sph -n zle4 "vim '$tf_zle' || pak"
+    tm -f -t sph -n zle4 "vim '$tf_zle' || pak"
 
     # tm -te sph -pak -n zle4 "pak"
 
@@ -300,16 +301,40 @@ function edit-command-line() {
     zle send-break		# Force reload from the buffer stack
 }
 
+# M-v
 autoload -z edit-command-line
 zle -N edit-command-line
 bindkey "\ev" edit-command-line
 
+
+function zsh-tmux-edit-pane {
+    # print -R - "$PREBUFFER$BUFFER" | tm -tout -i -S spv "explainshell"
+    # tm -te -d capture -tty -clean -editor vs
+    tm -te -d capture -clean -noabort - 2>/dev/null | vs +G
+    zle send-break		# Force reload from the buffer stack
+}
+
+# M-E
+autoload -z zsh-tmux-edit-pane
+zle -N zsh-tmux-edit-pane
+bindkey "\eV" zsh-tmux-edit-pane
+
+
+function rt-grep() {
+    # What does this do?
+    exec </dev/tty
+    #print -Rz - "unbuffer ack-grep \"\" . | less -rS"
+    #print -Rz - "ansigrep -i -- "
+    print -Rz - "eack "
+    zle send-break		# Force reload from the buffer stack
+}
+
 function zshexplainshell {
     print -R - "$PREBUFFER$BUFFER" | tm -tout -i -S spv "explainshell"
 
-    # tf_zle="$(nix mktemp zle sh)"
+    # tf_zle="$(ux mktemp zle sh)"
     # url="https://explainshell.com/explain?cmd=$(print -R - "$PREBUFFER$BUFFER" | urlencode)"
-    # tf_man="$(nix tf man || echo /dev/null)"
+    # tf_man="$(ux tf man || echo /dev/null)"
 
     # ci elinks-dump "$url" 0</dev/null | sed -n '/^[^ ]/,$p' > "$tf_man"
 
@@ -318,6 +343,7 @@ function zshexplainshell {
     # fi
 }
 
+# M-E
 autoload -z zshexplainshell
 zle -N zshexplainshell
 bindkey "\eE" zshexplainshell
@@ -371,9 +397,10 @@ bindkey "\eD" backward-kill-word
 
 # M-a
 #bindkey -s "^[a" "^A^Kcd \"\`pwd -P\`\";pwd\r"
-bindkey -s "^[a" "^A^Krat-fm\r"
+# bindkey -s "^[a" "^A^Krat-fm\r"
+bindkey -s "^[a" "^A^Ksh-apps\r"
 
-bindkey -s "^[\`" "^A^Kcd \"\$(vc get-top-level)\" && pwd\r"
+bindkey -s "^[\`" "^A^Kis-git && cd \"\$(vc get-top-level)\" && pwd\r"
 bindkey -s "^[$" "^A^Kdifftool.sh \`tmux show-buffer|head -1|sed \"s/^\\\[ \t\\\]*//\"|cut -d ' ' -f 1\`\t\\\\\^! "
 bindkey -s "^[~" "^A^Kgit commit --amend -m \"\"^B"
 bindkey -s "^[" "^A^Kgit amend\r" # C-M-S-~
@@ -390,7 +417,6 @@ bindkey -s "^[%" "^A^Kgit stash show -u \t"
 #zle -N tmuxcapture
 #bindkey "^[y" tmuxcapture
 
-bindkey -s "^[s" "^A^Kdired\r"
 bindkey -s "^[K" "^A^Kvc g dt -c\r" #bindkey -s "^[K" "^A^Kgit d --cached\r"
 bindkey -s "^[J" "^A^Kf find-file-repo \"*\"^B" # find a file by name in all commits
 
@@ -452,10 +478,10 @@ bindkey -s "^[F" "^A^Kgit log -m -S \"\"^B" # -S Search for changes containing s
 # dump
 bindkey -s "^[c" "^A^Kn menu\r"
 
-bindkey -s "^[C" "^A^Kcscope\r"
+bindkey -s "^[C" "^A^Kcsc\r" # cscope
 bindkey -s "^[G" "^A^Kgit log --oneline --grep=\"\"^B" # Search commit messages for regexp.
 bindkey -s "^[N" "^A^Kgit grep --break --heading --line-number \"\"^B" # Grep the working tree. If commit is supplied as last argument, grep files in that commit.
-bindkey -s "^[V" "^A^Kgit-grep-all-commits.sh \"\"^B" # Grep all files of ALL repository commits. Very inefficient.
+# bindkey -s "^[V" "^A^Kgit-grep-all-commits.sh \"\"^B" # Grep all files of ALL repository commits. Very inefficient.
 bindkey -s "^[1" "^A^Kgit add -p \t"
 bindkey -s "^[2" "^A^Kgit stash\r"
 bindkey -s "^[@" "^A^Kgit stash --keep-index\r" # stash but don't clean the index (so can stash again, or commit)
@@ -776,25 +802,26 @@ bindkey "\ek" copy-last-command-with-wd
         # print -Rz - ""
         # printf -- "%s\n" "Yo"
         # zle send-break		# Force reload from the buffer stack
+        # set -xv
 
-        text_to_add="$(xc -u | s chomp)"
+        text_to_add="$(xc -ub | s chomp)"
         RBUFFER="${text_to_add}${RBUFFER}"
+    }
+
+    function zsh-paste-before() {
+        text_to_add="$(xc -ub | s chomp)"
+        LBUFFER="${LBUFFER}${text_to_add}"
     }
 
     # # I can't use ^Y because zsh actually uses it.
     # # I can't use ^V because zsh uses it to insert literal characters.
     autoload -z zsh-paste-after
     zle -N zsh-paste-after
-    bindkey "\ep" zsh-paste-after
-
-    function zsh-paste-before() {
-        text_to_add="$(xc -u | s chomp)"
-        LBUFFER="${LBUFFER}${text_to_add}"
-    }
+    bindkey "\eP" zsh-paste-after
 
     autoload -z zsh-paste-before
     zle -N zsh-paste-before
-    bindkey "\eP" zsh-paste-before
+    bindkey "\ep" zsh-paste-before
 }
 
 fzf-dirs() {
@@ -956,7 +983,8 @@ export TTY
 ex_fp="$DUMP$HOME/notes2018/current/programs/exercism/shell/exercism_completion.zsh"
 test -f "$ex_fp" && . "$ex_fp"
 
-# Appears to not work
+
+# Appears to not work, at least with my version
 # . $HOME/source/git/github/hub/etc/hub.zsh_completion
 
 

@@ -392,6 +392,36 @@ autoload -z rt-command-line
 zle -N rt-command-line
 bindkey "\eu" rt-command-line
 
+# overwrite zsh's M-x
+# bindkey -s "^[x" "^A^Ksh-hydra\r"
+
+function source-sh-sourse() {
+    tf_zle="$(mktemp ${TMPDIR}/tf_zleXXXXXX || echo /dev/null)"
+
+    print -R - "$PREBUFFER$BUFFER" > $tf_zle
+
+    exec </dev/tty `# see etty`
+
+    tf_zle_contents="$(cat "$tf_zle")"
+
+    nvc -E "sh-source | ds -s source-to-source"
+    sts="$(gs source-to-source | umn)"
+    if test -n "$sts"; then
+        . "$(gs source-to-source | umn)"
+    fi
+
+    # cat "$tf_zle" | rtcmd
+    print -Rz - "$(<$tf_zle)"
+
+    command rm -f "$tf_zle"
+    zle send-break		# Force reload from the buffer stack
+}
+
+# M-x
+autoload -z source-sh-sourse
+zle -N source-sh-sourse
+bindkey "\ex" source-sh-sourse
+
 # [[google:zle functions]]
 bindkey "\eD" backward-kill-word
 
@@ -428,8 +458,6 @@ bindkey -s "^[l" "^A^Ksh-general\r"
 #
 bindkey -s "^[L" "^A^Ksh-ranger-lingo .\r"
 
-# overwrite zsh's M-x
-bindkey -s "^[x" "^A^Ksh-hydra\r"
 bindkey -s "^[j" "^A^Ksh-jump\r"
 
 bindkey -s "^[y" "^A^Ksh-yank\r"

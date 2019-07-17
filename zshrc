@@ -942,9 +942,6 @@ disable r
 # This will allow me to create a wrapper script called r. Otherwise it
 # will use the zsh r builtin.
 
-if [ -d "$MYGIT/google/or-tools/dependencies/install/bin" ] ; then
-    PATH="$PATH:$MYGIT/google/or-tools/dependencies/install/bin"
-fi
 
 . ~/.shellrc
 
@@ -958,9 +955,6 @@ export HH_CONFIG=hicolor        # get more colors
 export SHELL=zsh
 #export SHELL="$(readlink /proc/$$/exe)"
 
-#THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
-export SDKMAN_DIR="/home/shane/.sdkman"
-[[ -s "/home/shane/.sdkman/bin/sdkman-init.sh" ]] && source "/home/shane/.sdkman/bin/sdkman-init.sh"
 
 # Why the hell ire there so many /usr/bin in path?
 PATH="$(printf -- "%s" "$PATH" | sed ':a;s_:/usr/bin:__g;ta'):/usr/bin"
@@ -1008,8 +1002,6 @@ fi
 # "export TTY; echo hi | eipe | cat"
 export TTY
 
-ex_fp="$DUMP$HOME/notes2018/current/programs/exercism/shell/exercism_completion.zsh"
-test -f "$ex_fp" && . "$ex_fp"
 
 
 # Appears to not work, at least with my version

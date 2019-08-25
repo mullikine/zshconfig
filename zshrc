@@ -900,7 +900,7 @@ fzf-files() {
             # pl "$input" | tm -i -S -tout spv -xargs rifle
             printf -- "%s" "$input" | xc -i
             exec </dev/tty
-            v -- "$(printf -- "%s" "$input" | umn)"
+            rifle -- "$(printf -- "%s" "$input" | umn)"
         fi
     }
 

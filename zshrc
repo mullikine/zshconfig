@@ -894,7 +894,7 @@ fzf-files() {
 
     tput sc
 
-    F f | mnm | fzf | {
+    F f -f | mnm | fzf | {
         input="$(cat)"
         if [ -n "$input" ]; then
             # pl "$input" | tm -i -S -tout spv -xargs rifle

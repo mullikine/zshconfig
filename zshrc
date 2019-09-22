@@ -80,6 +80,12 @@ if test -f "$MYGIT/oh-my-zsh/oh-my-zsh.sh"; then
     source $MYGIT/oh-my-zsh/oh-my-zsh.sh
 fi
 
+# Not suer why the plugins are not loading
+plugins+=(zsh-autosuggestions)
+
+# This works
+. $ZSH_CUSTOM/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
+
 unsetopt correct_all
 
 # Disable mouse! I want to be able to scroll up the terminal.

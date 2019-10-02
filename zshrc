@@ -597,6 +597,8 @@ bindkey -s "^[[1;3B" "^A^K( pwd;echo;ls --color=always -ld * )| less -rS\n"
 
 # M-F1 - quit (like vim)
 bindkey -s "^[[1;3P" "^A^K^D"
+# M-F4 - quit (like vim)
+bindkey -s "^[[1;3S" "^A^K^D"
 # M-F1 from xterm
 bindkey -s "^[[1;9P" "^A^K^D"
 # M-F9 - quit (like vim)

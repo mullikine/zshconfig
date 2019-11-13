@@ -93,6 +93,11 @@ unsetopt correct_all
 # . $VAS/source/git/oh-my-zsh/custom/plugins/mouse.zsh
 # zle-toggle-mouse
 
+# This is slow. Don't do it here.
+#if [ -f ~/.shell_environment ]; then
+#    . ~/.shell_environment
+#fi
+
 if [ -f ~/.bash_aliases ]; then
     . ~/.bash_aliases
 fi

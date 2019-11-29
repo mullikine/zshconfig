@@ -295,15 +295,19 @@ function edit-command-line() {
 
     # Do I really want this to be inside another tmux or can I use the entire pane?
     # tm -t sph -n zle4 "e c '$tf_zle' || pak"
-    tm -f -t sph -n zle4 "vim '$tf_zle' || pak"
+
+    # This is the good tmux command
+    # tm -f -t sph -n zle4 "vim '$tf_zle' || pak"
 
     # tm -te sph -pak -n zle4 "pak"
 
     # This enabled use of vim within a command but if I'm using tmux,
     # this dosen't matter.
-    exec </dev/tty
+    # exec </dev/tty
+    exec <&1
 
-    # vim "$tf_zle"
+    # This might be better than using tmux because it will also work inside emacs
+    vim "$tf_zle"
 
     # tm -tout nw -n zle "vim $tf_zle" | cat
     print -Rz - "$(<$tf_zle)"

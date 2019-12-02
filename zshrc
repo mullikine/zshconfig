@@ -161,38 +161,6 @@ unsetopt auto_name_dirs
 
 
 # cd function
-cd () {
-    ret=0
-
-    if [[ "x$*" = "x..." ]]
-    then
-        cd ../..
-    elif [[ "x$*" = "x...." ]]
-    then
-        cd ../../..
-    elif [[ "x$*" = "x....." ]]
-    then
-        cd ../../..
-    elif [[ "x$*" = "x......" ]]
-    then
-        cd ../../../..
-    else
-        if [ -z "$@" ]; then
-            CWD="$HOME"
-        else
-            CWD="$@"
-        fi
-        # silence to stop vim gf complaining. can't be bothered finding the real reason
-        # enable again
-        builtin cd "$CWD"
-        ret="$?"
-        CWD="`pwd`"
-    fi
-
-    . $HOME/scripts/libraries/when-cd.sh
-
-    return "$ret"
-}
 
 if [ -n "$CWD" ] && ! test "$CWD" = "$(pwd)"; then
     printf -- "%s\n" "Inherited CWD: $CWD" | mnm 1>&2

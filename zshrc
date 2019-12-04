@@ -649,8 +649,7 @@ copy-last-command-output() {
     #cmd="$history[$((HISTCMD-1))]"
 
     # eval "$cmd" | xc -n -i
-    #
-    zl copy-last-output
+    zl copy-last-output &>/dev/null
 }
 # This kills the terminal history because I am pressing ^L
 # zle -N copy-last-command-output

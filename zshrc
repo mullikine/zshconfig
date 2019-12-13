@@ -1000,3 +1000,5 @@ if [ -f "$HOME$MYGIT/google-cloud-sdk/google-cloud-sdk/path.zsh.inc" ]; then sou
 if [ -f "$DUMP$MYGIT/google-cloud/google-cloud-sdk/completion.zsh.inc" ]; then source "$DUMP$MYGIT/google-cloud/google-cloud-sdk/completion.zsh.inc"; fi
 
 export DISPLAY=:0
+
+PATH="$(uniqpath)"

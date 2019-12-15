@@ -313,7 +313,16 @@ function rt-grep() {
 }
 
 function zshexplainshell {
-    print -R - "$PREBUFFER$BUFFER" | tm -tout -i -S spv "explainshell"
+    # print -R - "$PREBUFFER$BUFFER" | tm -tout -i -S spv "explainshell"
+    
+
+    tf_zle="$(mktemp ${TMPDIR}/tf_zleXXXXXX || echo /dev/null)"
+    print -R - "$PREBUFFER$BUFFER" > $tf_zle
+
+    exec <&1
+    print -R - "$PREBUFFER$BUFFER" | explainshell
+    print -Rz - "$(<$tf_zle)"
+    zle send-break		# Force reload from the buffer stack
 
     # tf_zle="$(ux mktemp zle sh)"
     # url="https://explainshell.com/explain?cmd=$(print -R - "$PREBUFFER$BUFFER" | urlencode)"
@@ -383,7 +392,7 @@ function source-sh-sourse() {
 
     print -R - "$PREBUFFER$BUFFER" > $tf_zle
 
-    exec </dev/tty `# see etty`
+    exec <&1
 
     tf_zle_contents="$(cat "$tf_zle")"
 

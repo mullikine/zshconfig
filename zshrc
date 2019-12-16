@@ -246,12 +246,12 @@ function toggle-athame() {
 #    zle send-break		# Force reload from the buffer stack
 #}
 
-
 function edit-command-line() {
     # overrides /home/shane/local/share/zsh/4.3.12-test-2/functions/edit-command-line
     # so that we use a custom vim for editing the command line
 
-    tf_zle="$(ux mktemp zle sh)"
+    # tf_zle="$(ux mktemp zle sh)"
+    tf_zle="$(mktemp ${TMPDIR}/tf_zleXXXXXX || echo /dev/null)"
     # ns "$tf_zle"
 
     print -R - "$PREBUFFER$BUFFER" > "$tf_zle"
@@ -289,15 +289,40 @@ autoload -z edit-command-line
 zle -N edit-command-line
 bindkey "\ev" edit-command-line
 
+function edit-command-line-sp() {
+    tf_zle="$(mktemp ${TMPDIR}/tf_zleXXXXXX || echo /dev/null)"
 
-function zsh-tmux-edit-pane {
-    # print -R - "$PREBUFFER$BUFFER" | tm -tout -i -S spv "explainshell"
-    # tm -te -d capture -tty -clean -editor vs
-    tm -te -d capture -clean -noabort - 2>/dev/null | vs +G
+    print -R - "$PREBUFFER$BUFFER" > "$tf_zle"
+
+    exec <&1
+
+    sp "$tf_zle"
+
+    print -Rz - "$(<$tf_zle)"
+
+    command rm -f "$tf_zle"
     zle send-break		# Force reload from the buffer stack
 }
 
-# M-E
+# M-C
+autoload -z edit-command-line-sp
+zle -N edit-command-line-sp
+bindkey "\eC" edit-command-line-sp
+
+
+function zsh-tmux-edit-pane {
+    tf_zle="$(mktemp ${TMPDIR}/tf_zleXXXXXX || echo /dev/null)"
+    print -R - "$PREBUFFER$BUFFER" > "$tf_zle"
+
+    # tm -te -d capture -tty -clean -editor vs
+
+    tm -te -d capture -clean -noabort - 2>/dev/null | vs +G
+
+    print -Rz - "$(<$tf_zle)"
+    zle send-break		# Force reload from the buffer stack
+}
+
+# M-V
 autoload -z zsh-tmux-edit-pane
 zle -N zsh-tmux-edit-pane
 bindkey "\eV" zsh-tmux-edit-pane
@@ -499,7 +524,7 @@ bindkey -s "^[F" "^A^Kgit log -m -S \"\"^B" # -S Search for changes containing s
 # dump
 bindkey -s "^[c" "^A^Kn menu\r"
 
-bindkey -s "^[C" "^A^Kcsc\r" # cscope
+# bindkey -s "^[C" "^A^Kcsc\r" # cscope
 bindkey -s "^[G" "^A^Kgit log --oneline --grep=\"\"^B" # Search commit messages for regexp.
 bindkey -s "^[N" "^A^Kgit grep --break --heading --line-number \"\"^B" # Grep the working tree. If commit is supplied as last argument, grep files in that commit.
 # bindkey -s "^[V" "^A^Kgit-grep-all-commits.sh \"\"^B" # Grep all files of ALL repository commits. Very inefficient.

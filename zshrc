@@ -913,7 +913,9 @@ fzf-files() {
 
     tput sc
 
-    F f -f | mnm | fzf | {
+    # This is for dirs
+    # -pscript "xa -E show-extensions-below 'echo; :' ls"
+    F f -f | fzf -m -P | {
         input="$(cat)"
         if [ -n "$input" ]; then
             # pl "$input" | tm -i -S -tout spv -xargs rifle

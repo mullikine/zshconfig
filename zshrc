@@ -206,8 +206,8 @@ bindkey "\eOA" up-line-or-beginning-search
 bindkey "\eOB" down-line-or-beginning-search
 #[[ -n "${key[Up]}" ]] && bindkey "${key[Up]}" history-beginning-search-backward
 #[[ -n "${key[Down]}" ]] && bindkey "${key[Down]}" history-beginning-search-forward
-[[ -n "${key[Up]}"      ]]  && bindkey   "${key[Up]}"       up-line-or-beginning-search
-[[ -n "${key[Down]}"    ]]  && bindkey   "${key[Down]}"    down-line-or-beginning-search
+[[ -n "${key[Up]}"   ]] && bindkey "${key[Up]}"   up-line-or-beginning-search
+[[ -n "${key[Down]}" ]] && bindkey "${key[Down]}" down-line-or-beginning-search
 
 # bindings
 # {{{

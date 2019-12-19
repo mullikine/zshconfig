@@ -879,7 +879,7 @@ fzf-dirs() {
 
     tput sc
 
-    F d | mnm | fzf | {
+    F d | fzf -m -P -pscript "xa -E show-extensions-below 'echo; :' ls" | {
         input="$(cat)"
         if [ -n "$input" ]; then
             # pl "$input" | tm -i -S -tout spv -xargs rifle

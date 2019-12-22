@@ -883,13 +883,16 @@ fzf-dirs() {
         input="$(cat)"
         if [ -n "$input" ]; then
             # pl "$input" | tm -i -S -tout spv -xargs rifle
-            printf -- "%s" "$input" | xc -i
+            printf -- "%s" "$input" | xc -s -i
             # printf -- "copied" | ns
             exec </dev/tty
             input="$(printf -- "%s" "$input" | umn)"
             cd "$input"
-            pwd
             CWD="$input" zsh
+            #(
+            #set -x
+            #CWD="$input" zsh
+            #)
         fi
     }
 
@@ -902,6 +905,7 @@ fzf-dirs() {
         #fi
 
 }
+# c-q
 zle -N fzf-dirs
 bindkey '^Q' fzf-dirs
 
@@ -919,9 +923,13 @@ fzf-files() {
         input="$(cat)"
         if [ -n "$input" ]; then
             # pl "$input" | tm -i -S -tout spv -xargs rifle
-            printf -- "%s" "$input" | xc -i
+            printf -- "%s" "$input" | xc -s -i
             exec </dev/tty
             rifle -- "$(printf -- "%s" "$input" | umn)"
+            #(
+            #set -x
+            #rifle -- "$(printf -- "%s" "$input" | umn)"
+            #)
         fi
     }
 

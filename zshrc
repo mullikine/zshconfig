@@ -10,7 +10,7 @@
 ## set options to turn on tracing and expansion of commands contained in the prompt
 #setopt xtrace prompt_subst
 
-HISTFILE=$VAS/programs/zsh/dotfiles/.zsh_history
+HISTFILE=$HOME/programs/zsh/dotfiles/.zsh_history
 
 export BULK=/export/bulk/local-home/smulliga
 #export TERM=xterm-256color
@@ -1044,5 +1044,25 @@ if [ -f "$HOME$MYGIT/google-cloud-sdk/google-cloud-sdk/path.zsh.inc" ]; then sou
 if [ -f "$DUMP$MYGIT/google-cloud/google-cloud-sdk/completion.zsh.inc" ]; then source "$DUMP$MYGIT/google-cloud/google-cloud-sdk/completion.zsh.inc"; fi
 
 export DISPLAY=:0
+
+
+# HISTFILE="$HOME/.zsh_history"
+
+HISTSIZE=10000000
+SAVEHIST=10000000
+unsetopt BANG_HIST                 # Treat the '!' character specially during expansion. Unset this.
+setopt EXTENDED_HISTORY          # Write the history file in the ":start:elapsed;command" format.
+setopt INC_APPEND_HISTORY        # Write to the history file immediately, not when the shell exits.
+setopt SHARE_HISTORY             # Share history between all sessions.
+# setopt HIST_EXPIRE_DUPS_FIRST    # Expire duplicate entries first when trimming history.
+# setopt HIST_IGNORE_DUPS          # Don't record an entry that was just recorded again.
+# setopt HIST_IGNORE_ALL_DUPS      # Delete old recorded entry if new entry is a duplicate.
+setopt HIST_FIND_NO_DUPS         # Do not display a line previously found.
+setopt HIST_IGNORE_SPACE         # Don't record an entry starting with a space.
+setopt HIST_SAVE_NO_DUPS         # Don't write duplicate entries in the history file.
+setopt HIST_REDUCE_BLANKS        # Remove superfluous blanks before recording entry.
+setopt HIST_VERIFY               # Don't execute immediately upon history expansion.
+setopt HIST_BEEP                 # Beep when accessing nonexistent history.
+
 
 PATH="$(uniqpath)"

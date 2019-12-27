@@ -73,11 +73,18 @@ export DISABLE_AUTO_TITLE="true"
 #source $ZSH/oh-my-zsh.sh
 
 
-if test -f "$MYGIT/oh-my-zsh/oh-my-zsh.sh"; then
-    export ZSH=$MYGIT/oh-my-zsh
-    export ZSH_THEME="more-minimal" # - fav
-    plugins=(command-not-found git ssh-completion)
-    source $MYGIT/oh-my-zsh/oh-my-zsh.sh
+if test -f "$MYGIT/ohmyzsh/ohmyzsh/oh-my-zsh.sh"; then
+    export ZSH=$MYGIT/ohmyzsh/ohmyzsh
+    # export ZSH_THEME="cypher"
+    # This one has a git dirty identifier
+    export ZSH_THEME="af-magic"
+    # export ZSH_THEME="sorin"
+    # export ZSH_THEME="more-minimal" # - fav
+    # plugins=(command-not-found git ssh-completion)
+    # plugins are bad, they bring with them aliases
+    # I want the git plugin without aliases
+    plugins=(command-not-found)
+    source $MYGIT/ohmyzsh/ohmyzsh/oh-my-zsh.sh
 fi
 
 # Not suer why the plugins are not loading
@@ -90,7 +97,7 @@ unsetopt correct_all
 
 # Disable mouse! I want to be able to scroll up the terminal.
 # plugins=(mouse)
-# . $VAS/source/git/oh-my-zsh/custom/plugins/mouse.zsh
+# . $VAS/source/git/ohmyzsh/ohmyzsh/custom/plugins/mouse.zsh
 # zle-toggle-mouse
 
 # This is slow. Don't do it here.
@@ -513,8 +520,10 @@ bindkey -s "^[M" "^A^Kmagithub\r"
 bindkey -s "^[m" "^A^Ksh-git\r"
 bindkey -s "^[n" "^A^Ksh-new\r"
 # bindkey -s "^[n" "^A^Kmagit rl\r"
+# bindkey -s "^[R" "^E|grep -i "
 bindkey -s "^[w" "^A^Kdired\r"
 bindkey -s "^[W" "^A^Kdired -g\r"
+bindkey -s "^[R" "^A^Kdired -g -alR -XGh --group-directories-first\r"
 # bindkey -s "^[W" "^A^Kgit dw\r"
 bindkey -s "^[s" "^A^Kpe\r" # spacemacs
 bindkey -s "^[t" "^A^Kgit add -A .\r"
@@ -544,7 +553,6 @@ bindkey -s "^[=" "^A^Kgit branch\n"
 bindkey "\C-r" history-incremental-pattern-search-backward
 bindkey -s "^[r" "^A^Kranger\r"
 bindkey -s "^[o" "^A^Kpopd\r"
-bindkey -s "^[R" "^E|grep -i "
 bindkey -s "^[^g" "^A^Kvgrep -f -- \"\"^B"
 # bindkey '\eg' _git-status
 #bindkey -s "^[g" "^A^Kvgrep -- \"\"^B"

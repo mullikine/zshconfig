@@ -73,18 +73,22 @@ export DISABLE_AUTO_TITLE="true"
 #source $ZSH/oh-my-zsh.sh
 
 
-if test -f "$MYGIT/ohmyzsh/ohmyzsh/oh-my-zsh.sh"; then
-    export ZSH=$MYGIT/ohmyzsh/ohmyzsh
+# omzdir=$MYGIT/ohmyzsh/ohmyzsh
+omzdir=$MYGIT/mullikine/ohmyzsh
+
+
+if test -f "$omzdir/oh-my-zsh.sh"; then
+    export ZSH="$omzdir"
     # export ZSH_THEME="cypher"
     # This one has a git dirty identifier
-    export ZSH_THEME="af-magic"
+    # export ZSH_THEME="af-magic"
     # export ZSH_THEME="sorin"
-    # export ZSH_THEME="more-minimal" # - fav
+    export ZSH_THEME="more-minimal" # - fav
     # plugins=(command-not-found git ssh-completion)
     # plugins are bad, they bring with them aliases
     # I want the git plugin without aliases
-    plugins=(command-not-found)
-    source $MYGIT/ohmyzsh/ohmyzsh/oh-my-zsh.sh
+    plugins=(command-not-found git)
+    source "$omzdir/oh-my-zsh.sh"
 fi
 
 # Not suer why the plugins are not loading
@@ -1058,7 +1062,9 @@ export DISPLAY=:0
 
 HISTSIZE=10000000
 SAVEHIST=10000000
-unsetopt BANG_HIST                 # Treat the '!' character specially during expansion. Unset this.
+# unsetopt BANG_HIST                 # Treat the '!' character specially during expansion. Unset this.
+# Keep it on because I use !$ all the time
+setopt BANG_HIST                 # Treat the '!' character specially during expansion. Unset this.
 setopt EXTENDED_HISTORY          # Write the history file in the ":start:elapsed;command" format.
 setopt INC_APPEND_HISTORY        # Write to the history file immediately, not when the shell exits.
 setopt SHARE_HISTORY             # Share history between all sessions.

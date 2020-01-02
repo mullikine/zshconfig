@@ -561,6 +561,7 @@ bindkey -s "^[o" "^A^Kpopd\r"
 bindkey -s "^[^g" "^A^Kead -i -l -- \"\"^B"
 # bindkey -s "^[g" "^A^Kvgrep -- \"\"^B"
 bindkey -s "^[g" "^A^Kead -l -- \"\"^B"
+bindkey -s "^[?" "^A^Ksp -ic my-counsel-ag .\r"
 # bindkey '\eg' _git-status
 # bindkey -s "^[g" "^A^Kopen -e \"\$(xc | tail -n 1)\"\r"
 #bindkey -s "^[m" "^A^Kgit reflog\r"

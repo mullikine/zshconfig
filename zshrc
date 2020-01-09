@@ -1082,4 +1082,6 @@ setopt HIST_VERIFY               # Don't execute immediately upon history expans
 setopt HIST_BEEP                 # Beep when accessing nonexistent history.
 
 PATH="$(uniqpath)"
+
+# This is ok
 source $HOME/.config/broot/launcher/bash/br

@@ -35,6 +35,9 @@ setopt no_append_history
 #setopt append_history no_inc_append_history no_share_history
 setopt null_glob
 
+# Have the full path here because PATH may not be set up
+: ${TTY:="$($HOME/scripts/tm-tty)"}
+
 # To stop bailing on the command when it fails to match a glob pattern.
 # Put this option in your .zshrc:
 setopt NO_NOMATCH

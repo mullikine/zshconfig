@@ -319,9 +319,9 @@ function edit-command-line-sp() {
 }
 
 # M-C
-autoload -z edit-command-line-sp
-zle -N edit-command-line-sp
-bindkey "\eC" edit-command-line-sp
+# autoload -z edit-command-line-sp
+# zle -N edit-command-line-sp
+# bindkey "\eC" edit-command-line-sp
 
 
 function zsh-tmux-edit-pane {
@@ -535,21 +535,24 @@ bindkey -s "^[R" "^A^Kdired -g -alR -XGh --group-directories-first\r"
 bindkey -s "^[s" "^A^Kpe\r" # spacemacs
 bindkey -s "^[t" "^A^Kgit add -A .\r"
 bindkey -s "^[e" "^A^Kgit commit -m \"\"^B"
-bindkey -s "^[F" "^A^Kgit log -m -S \"\"^B" # -S Search for changes containing string, -m search merges also
+# bindkey -s "^[F" "^A^Kgit log -m -S \"\"^B" # -S Search for changes containing string, -m search merges also
+bindkey -s "^[F" "^A^Kfzf-files-tmux^M"
 
 # dump
 bindkey -s "^[c" "^A^Kn menu\r"
+bindkey -s "^[C" "^A^Kn ade\r"
 
 # bindkey -s "^[C" "^A^Kcsc\r" # cscope
 bindkey -s "^[G" "^A^Kgit log --oneline --grep=\"\"^B" # Search commit messages for regexp.
-bindkey -s "^[N" "^A^Kgit grep --break --heading --line-number \"\"^B" # Grep the working tree. If commit is supplied as last argument, grep files in that commit.
+bindkey -s "^[N" "^A^Kdirnotes\r"
+# bindkey -s "^[N" "^A^Kgit grep --break --heading --line-number \"\"^B" # Grep the working tree. If commit is supplied as last argument, grep files in that commit.
 # bindkey -s "^[V" "^A^Kgit-grep-all-commits.sh \"\"^B" # Grep all files of ALL repository commits. Very inefficient.
 bindkey -s "^[1" "^A^Kgit add -p \t"
-bindkey -s "^[2" "^A^Kgit stash\r"
-bindkey -s "^[@" "^A^Kgit stash --keep-index\r" # stash but don't clean the index (so can stash again, or commit)
-bindkey -s "^[#" "^A^Kgit stash pop\r"
-bindkey -s "^[3" "^A^Kgit stash apply\r"
-bindkey -s "^[!" "^A^Kgit stash drop \t"
+# bindkey -s "^[2" "^A^Kgit stash\r"
+# bindkey -s "^[@" "^A^Kgit stash --keep-index\r" # stash but don't clean the index (so can stash again, or commit)
+# bindkey -s "^[#" "^A^Kgit stash pop\r"
+# bindkey -s "^[3" "^A^Kgit stash apply\r"
+# bindkey -s "^[!" "^A^Kgit stash drop \t"
 bindkey -s "^[4" "^A^Kgit rebase -i \`tmux show-buffer|head -1|sed \"s/^\\\[ \t\\\]*//\"|cut -d ' ' -f 1\`\t"
 bindkey -s "^[8" "^A^Kdifftool.sh \\\\\^!^B^B^B"
 bindkey -s "^[9" "^A^Kdifftool.sh HEAD\\\\\^:\n"
@@ -564,7 +567,7 @@ bindkey -s "^[o" "^A^Kpopd\r"
 bindkey -s "^[^g" "^A^Kead -i -l -- \"\"^B"
 # bindkey -s "^[g" "^A^Kvgrep -- \"\"^B"
 bindkey -s "^[g" "^A^Kead -l -- \"\"^B"
-bindkey -s "^[?" "^A^Ksp -ic my-counsel-ag .\r"
+bindkey -s "^[?" "^A^Ksearch-here .\r"
 # bindkey '\eg' _git-status
 # bindkey -s "^[g" "^A^Kopen -e \"\$(xc | tail -n 1)\"\r"
 #bindkey -s "^[m" "^A^Kgit reflog\r"
@@ -587,8 +590,12 @@ bindkey -s "^[?" "^A^Ksp -ic my-counsel-ag .\r"
 #bindkey -s "^[z" "^A^Kgit clean -fd .\r"
 #bindkey -s "^[C" "^A^Kgit log -m -G \"\"^B" # -G Search for changes containing regexp, -m search merges also
 #bindkey -s "^[y" "^A^Ktmux-capture.sh -v\r"
+
 # Binding to M-k was too annoying
 #bindkey -s "^[k" "^A^Kdifftool.sh\r" #bindkey -s "^[k" "^A^Kgit d\r"
+
+# Maybe it would be ok for slmenu
+bindkey -s "^[p" "^A^Kslmenu\r"
 
 # Doesn't work
 #tmuxwinhere() {
@@ -834,10 +841,12 @@ export SENSING3D=/var/smulliga/projects/3dsensing/packages/3dsensing
 zmodload -i zsh/parameter
 copy-last-command-with-wd() {
     #echo "cd \"$(pwd)\"; $history[$((HISTCMD-1))]" | xclip -f -i -selection primary &>1 | tmux load-buffer -
-    echo "cd \"$(pwd)\"; $history[$((HISTCMD-1))]" | sed 's//\\b/g' | mnm | xc -n -i 2>/dev/null
+    echo "cd \"$(pwd)\"; $history[$((HISTCMD-1))]" | sed 's//\\b/g' | mnm | xc -n -ii 2>/dev/null
 }
 zle -N copy-last-command-with-wd
 #bindkey "^[k" copy-last-command-with-wd
+
+# This is actually perfect for M-k because it was an annoying binding apparently.
 bindkey "\ek" copy-last-command-with-wd
 
 # zsh
@@ -1002,11 +1011,12 @@ export HH_CONFIG=hicolor        # get more colors
 export SHELL=zsh
 #export SHELL="$(readlink /proc/$$/exe)"
 
+# echo "PATH:'$PATH'"
 
 # Why the hell ire there so many /usr/bin in path?
-PATH="$(printf -- "%s" "$PATH" | sed ':a;s_:/usr/bin:__g;ta'):/usr/bin"
-PATH="$(printf -- "%s" "$PATH" | sed ':a;s_^/usr/bin:__g;ta'):/usr/bin"
-PATH="$(printf -- "%s" "$PATH" | sed ':a;s_:/usr/bin$__g;ta'):/usr/bin"
+# PATH="$(printf -- "%s" "$PATH" | sed ':a;s_:/usr/bin:__g;ta'):/usr/bin"
+# PATH="$(printf -- "%s" "$PATH" | sed ':a;s_^/usr/bin:__g;ta'):/usr/bin"
+# PATH="$(printf -- "%s" "$PATH" | sed ':a;s_:/usr/bin$__g;ta'):/usr/bin"
 export PATH
 
 # This is so I can run tm commands taken from autofiles file in zsh.
